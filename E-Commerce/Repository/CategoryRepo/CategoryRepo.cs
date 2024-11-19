@@ -125,9 +125,10 @@ namespace E_Commerce.Repository.CategoryRepo
         public CategoryDTO GetById(int id)
         {
             var category = _context.categories
+                .Include(s => s.Products)
+                .ThenInclude(p => p.Users)
                 .FirstOrDefault(c => c.Id == id);
 
-            
             if (category == null) return null;
 
             var categoryDTO = new CategoryDTO
