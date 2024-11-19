@@ -16,40 +16,40 @@ namespace E_Commerce.Repository.CategoryRepo
         }
         public CategoryDTO Add(CategoryDTO categoryDTO)
         {
-            if(categoryDTO.ProductIds.Count() == 0)
-            {
-                throw new ArgumentException();
-            }
-
-                Category category = new Category
+            //list of products that needed to be matched with new category 
+            var matchedProduct = _context.products.Where(p => categoryDTO.ProductIds.Contains(p.Id)).ToList();
+            var category = new Category
             {
                 Name = categoryDTO.Name,
-                Products = _context.products
-                .Where(p => categoryDTO.ProductIds.Count() > 0 
-                                && categoryDTO.ProductIds.Contains(p.Id)).ToList(),
-               
+                Products = matchedProduct
             };
+            if(category.Products == null)
+            {
+                throw new Exception("Not Found Products");
+            }
 
             if (category == null) { return null; }
-            _context.categories.Add(category);
 
+
+            _context.categories.Add(category);
             _context.SaveChanges();
 
+
+
             return categoryDTO;
-
-
         }
-
+     
         public CategoryDTO AddWithRelatedData(CategoryDTO categoryDTO)
         {
             //form database
-            //var existingproducts = _context.products.Select(m => m.Name).ToList();
+            var existingproducts = _context.products.Select(m => m.Name).ToList();
+           
 
             var category = new Category
             {
                 Name = categoryDTO.Name,
                 Products = categoryDTO.Products
-                .Where(p => ! _context.products.Select(m => m.Name).Contains(p.Name))
+                .Where(p => ! existingproducts.Contains(p.Name))
                 .Select(x => new Product
                 {
                     Name = x.Name,
@@ -71,6 +71,8 @@ namespace E_Commerce.Repository.CategoryRepo
                         ).ToList()
 
             };
+
+          
             _context.categories.Add(category);
             _context.SaveChanges();
 
@@ -123,10 +125,9 @@ namespace E_Commerce.Repository.CategoryRepo
         public CategoryDTO GetById(int id)
         {
             var category = _context.categories
-                .Include(s => s.Products)
-                .ThenInclude(p => p.Users)
                 .FirstOrDefault(c => c.Id == id);
 
+            
             if (category == null) return null;
 
             var categoryDTO = new CategoryDTO
@@ -183,5 +184,6 @@ namespace E_Commerce.Repository.CategoryRepo
             _context.SaveChanges();
             return categoryDTO;
         }
+
     }
 }

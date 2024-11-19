@@ -10,7 +10,15 @@ namespace E_Commerce.DTOs
         public string Name { get; set; }
 
         public List<int> ProductIds {  get; set; } = new List<int>();
-        public ICollection<ProductDTO> Products { get; set; } = new Collection<ProductDTO>();
+        public ICollection<ProductDTO>? Products { get; set; }
+
+    }
+    public class CategoryToReturnDTO
+    {
+        [Required]
+        public string Name { get; set; }
+
+        public ICollection<ProductDTO>? Products { get; set; }
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace E_Commerce.Models
 {
@@ -16,6 +17,7 @@ namespace E_Commerce.Models
 
         public ICollection<User>? Users { get; set; } = new Collection<User>();
 
+        [ForeignKey(nameof(Category.Id))]
         public int CategoryId { get; set; } 
         public Category Category { get; set; } = new Category();
 
