@@ -13,7 +13,7 @@ namespace E_Commerce.Repository.CategoryRepo
         public CategoryDTO AddWithRelatedData(CategoryDTO categoryDTO);
 
         public CategoryDTO Update(int Id , CategoryDTO categoryDTO);
-
+        public CategoryDTO UpdateWithRelatedData(int Id, CategoryDTO categoryDTO);
         public CategoryDTO Delete(int Id);
 
     }

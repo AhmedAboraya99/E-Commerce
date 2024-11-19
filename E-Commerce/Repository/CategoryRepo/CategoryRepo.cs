@@ -160,6 +160,27 @@ namespace E_Commerce.Repository.CategoryRepo
                .Include(s => s.Products)
                .ThenInclude(p => p.Users)
                .FirstOrDefault(c => c.Id == Id);
+
+            //list of products that needed to be matched with new category 
+            var matchedProduct = _context.products.Where(p => categoryDTO.ProductIds.Contains(p.Id)).ToList();
+
+            if (category == null)
+            {
+                return null;
+            }
+            category.Name = categoryDTO.Name;
+            category.Products = matchedProduct;
+
+            _context.categories.Update(category);
+            _context.SaveChanges();
+            return categoryDTO;
+        }
+        public CategoryDTO UpdateWithRelatedData(int Id, CategoryDTO categoryDTO)
+        {
+            var category = _context.categories
+               .Include(s => s.Products)
+               .ThenInclude(p => p.Users)
+               .FirstOrDefault(c => c.Id == Id);
             if (category == null)
             {
                 return null;
