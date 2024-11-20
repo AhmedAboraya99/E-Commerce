@@ -13,7 +13,5 @@ namespace E_Commerce.DTOs
 
         public DateTime ExpireDate { get; set; }
 
-        
-        public UserDTO? User { get; set; }
     }
 }

@@ -9,16 +9,29 @@ namespace E_Commerce.DTOs
         [Required]
         public string Name { get; set; }
 
-        public List<int> ProductIds {  get; set; } = new List<int>();
-        public ICollection<ProductDTO>? Products { get; set; }
+    }
+        public class CategoryToAddOnlyDTO
+        {
+            [Required]
+            public string Name { get; set; }
+
+            public List<int> ProductIds {  get; set; } = new List<int>();
+        }
+
+    public class CategoryToAddRelatedDTO
+    {
+        [Required]
+        public string Name { get; set; }
+        public ICollection<ProductToAddRelatedDTO>? Products { get; set; } = new Collection<ProductToAddRelatedDTO>();
 
     }
     public class CategoryToReturnDTO
     {
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
 
-        public ICollection<ProductDTO>? Products { get; set; }
+        public ICollection<ProductToReturnDTO>? Products { get; set; }
 
     }
 }

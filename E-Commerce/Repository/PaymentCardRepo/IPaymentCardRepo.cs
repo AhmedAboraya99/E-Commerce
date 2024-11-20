@@ -9,12 +9,12 @@ namespace E_Commerce.Repository.PaymentCardRepo
 
         public List<PaymentCardDTO> GetAll();
 
-        public PaymentCardDTO Add(PaymentCardDTO paymentCardDTO);
+        public int Add(PaymentCardDTO paymentCardDTO);
 
-        public PaymentCardDTO AddWithRelatedData(PaymentCardDTO paymentCardDTO);
+        public int AddWithRelatedData(PaymentCardDTO paymentCardDTO);
 
-        public PaymentCardDTO Update(int Id, PaymentCardDTO paymentCardDTO);
+        public bool Update(int Id, PaymentCardDTO paymentCardDTO);
 
-        public PaymentCardDTO Delete(int Id);
+        public bool Delete(int Id);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using E_Commerce.DTOs;
-using E_Commerce.Repository.CategoryRepo;
+using E_Commerce.Repository.UserRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,51 +7,50 @@ namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly ICategoryRepo _repo;
+        private readonly IUserRepo _repo;
 
-        public CategoriesController(ICategoryRepo Repo)
+        public UsersController(IUserRepo repo)
         {
-            _repo = Repo;
-
+            _repo = repo;
         }
 
-            // Create
+        // Create
         [HttpPost("Add")]
-        public IActionResult AddCategory(CategoryToAddOnlyDTO categoryDto)
+        public IActionResult AddUser(UserToAddOnlyDTO userDto)
         {
             try
             {
-                var categoryRes = _repo.Add(categoryDto);
+                var userRes = _repo.Add(userDto);
 
-                if (categoryRes == null)
+                if (userRes == null)
                 {
                     return NotFound();
                 }
-                return Created(nameof(GetCategoryById), new { id = categoryRes });
+
+                return CreatedAtAction(nameof(GetUserById), new { id = userRes });
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            
         }
 
-        [HttpPost("AddWithRelatedData")]
-        public IActionResult AddCategoryData(CategoryToAddRelatedDTO categoryDto)
+
+        // Create
+        [HttpPost]
+        public IActionResult AddUserWithRelatedData(UserToAddRelatedDTO userDto)
         {
             try
             {
-                var categoryRes = _repo.AddWithRelatedData(categoryDto);
+                var userRes = _repo.AddWithRelatedData(userDto);
 
-                if (categoryRes == null)
+                if (userRes == null)
                 {
                     return NotFound();
                 }
-                return Created(nameof(GetCategoryById), new { id = categoryRes });
-
+            return Created(nameof(GetUserById),new {Id = userRes});
             }
             catch (Exception ex)
             {
@@ -61,18 +60,18 @@ namespace E_Commerce.Controllers
         }
         // Read
         [HttpGet]
-        public IActionResult GetAllCategories()
+        public IActionResult GetAllUsers()
         {
             try
             {
-                var categories = _repo.GetAll();
+                var users = _repo.GetAll();
 
-                if (categories == null)
+                if (users == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(categories);
+                return Ok(users);
             }
             catch (Exception ex)
             {
@@ -81,18 +80,18 @@ namespace E_Commerce.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCategoryById(int id)
+        public IActionResult GetUserById(int id)
         {
             try
             {
-                var category = _repo.GetById(id);
+                var user = _repo.GetById(id);
 
-                if (category == null)
+                if (user == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(category);
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -102,18 +101,18 @@ namespace E_Commerce.Controllers
 
         // Update
         [HttpPut("{id}")]
-        public IActionResult UpdateCategory(int id, CategoryToAddOnlyDTO categoryDto)
+        public IActionResult UpdateUser(int id, UserToAddRelatedDTO userDto)
         {
             try
             {
-                var IsUpdated = _repo.Update(id, categoryDto);
+                var IsExisted = _repo.Update(id, userDto);
 
-                if (IsUpdated == false)
+                if (IsExisted == false)
                 {
                     return NotFound();
                 }
 
-                return Accepted(IsUpdated);
+                return Accepted(IsExisted);
             }
             catch (Exception ex)
             {
@@ -123,7 +122,7 @@ namespace E_Commerce.Controllers
 
         // Delete
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategory(int id)
+        public IActionResult DeleteUser(int id)
         {
             try
             {
@@ -143,6 +142,3 @@ namespace E_Commerce.Controllers
         }
     }
 }
-
-
-

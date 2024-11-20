@@ -5,16 +5,16 @@ namespace E_Commerce.Repository.ProductRepo
     public interface IProductRepo
     {
 
-        public ProductDTO GetById(int id);
+        public ProductToReturnDTO GetById(int id);
 
-        public List<ProductDTO> GetAll();
+        public List<ProductToReturnDTO> GetAll();
 
-        public ProductDTO Add(ProductDTO productDTO);
+        public int Add(ProductToAddOnlyDTO productDTO);
 
-        public ProductDTO AddWithRelatedData(ProductDTO productDTO);
+        public int AddWithRelatedData(ProductToAddRelatedDTO productDTO);
 
-        public ProductDTO Update(int Id, ProductDTO productDTO);
+        public bool Update(int Id, ProductToAddOnlyDTO productDTO);
 
-        public ProductDTO Delete(int Id);
+        public bool Delete(int Id);
     }
 }

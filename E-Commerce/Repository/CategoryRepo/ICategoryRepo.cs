@@ -4,17 +4,17 @@ namespace E_Commerce.Repository.CategoryRepo
 {
     public interface ICategoryRepo
     {
-        public CategoryDTO GetById(int id);
+        public CategoryToReturnDTO GetById(int id);
 
-        public List<CategoryDTO> GetAll();
+        public List<CategoryToReturnDTO> GetAll();
 
-        public CategoryDTO Add(CategoryDTO categoryDTO);
+        public int Add(CategoryToAddOnlyDTO categoryDTO);
 
-        public CategoryDTO AddWithRelatedData(CategoryDTO categoryDTO);
+        public int AddWithRelatedData(CategoryToAddRelatedDTO categoryDTO);
 
-        public CategoryDTO Update(int Id , CategoryDTO categoryDTO);
-        public CategoryDTO UpdateWithRelatedData(int Id, CategoryDTO categoryDTO);
-        public CategoryDTO Delete(int Id);
+        public bool Update(int Id , CategoryToAddOnlyDTO categoryDTO);
+        public bool UpdateWithRelatedData(int Id, CategoryToAddRelatedDTO categoryDTO);
+        public bool Delete(int Id);
 
     }
 }

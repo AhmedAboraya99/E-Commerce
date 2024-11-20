@@ -4,16 +4,16 @@ namespace E_Commerce.Repository.UserRepo
 {
     public interface IUserRepo
     {
-        public UserDTO GetById(int id);
+        public UserToReturnDTO GetById(int id);
 
-        public List<UserDTO> GetAll();
+        public List<UserToReturnDTO> GetAll();
 
-        public UserDTO Add(UserDTO userDTO);
+        public int Add(UserToAddOnlyDTO userDTO);
 
-        public UserDTO AddWithRelatedData(UserDTO userDTO);
+        public int AddWithRelatedData(UserToAddRelatedDTO userDTO);
 
-        public UserDTO Update(int Id, UserDTO userDTO);
+        public bool Update(int Id, UserToAddRelatedDTO userDTO);
 
-        public UserDTO Delete(int Id);
+        public bool Delete(int Id);
     }
 }

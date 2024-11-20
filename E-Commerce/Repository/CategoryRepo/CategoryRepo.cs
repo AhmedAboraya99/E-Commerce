@@ -14,7 +14,7 @@ namespace E_Commerce.Repository.CategoryRepo
             _context = context;
             
         }
-        public CategoryDTO Add(CategoryDTO categoryDTO)
+        public int Add(CategoryToAddOnlyDTO categoryDTO)
         {
             //list of products that needed to be matched with new category 
             var matchedProduct = _context.products.Where(p => categoryDTO.ProductIds.Contains(p.Id)).ToList();
@@ -28,7 +28,7 @@ namespace E_Commerce.Repository.CategoryRepo
                 throw new Exception("Not Found Products");
             }
 
-            if (category == null) { return null; }
+            if (category == null) { throw new Exception("Category Not Found"); }
 
 
             _context.categories.Add(category);
@@ -36,26 +36,25 @@ namespace E_Commerce.Repository.CategoryRepo
 
 
 
-            return categoryDTO;
+            return category.Id;
         }
      
-        public CategoryDTO AddWithRelatedData(CategoryDTO categoryDTO)
+        public int AddWithRelatedData(CategoryToAddRelatedDTO categoryDTO)
         {
             //form database
-            var existingproducts = _context.products.Select(m => m.Name).ToList();
+            var newProducts = _context.products
+                            .Where(p => !categoryDTO.Products.Select(c => c.Name).Contains(p.Name)).ToList();
            
 
             var category = new Category
             {
                 Name = categoryDTO.Name,
                 Products = categoryDTO.Products
-                .Where(p => ! existingproducts.Contains(p.Name))
                 .Select(x => new Product
                 {
                     Name = x.Name,
                     Price = x.Price,
                     Users = x.Users
-                            .Where(i => _context.users.Select(u => u.Name).Contains(i.Name))
                             .Select(u => new User
                             {
                                 Name = u.Name,
@@ -76,17 +75,17 @@ namespace E_Commerce.Repository.CategoryRepo
             _context.categories.Add(category);
             _context.SaveChanges();
 
-            return categoryDTO;
+            return category.Id;
 
 
         }
 
-        public CategoryDTO Delete(int Id)
+        public bool Delete(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public List<CategoryDTO> GetAll()
+        public List<CategoryToReturnDTO> GetAll()
         {
             var categories = _context.categories
                 .Include(s => s.Products)
@@ -97,15 +96,18 @@ namespace E_Commerce.Repository.CategoryRepo
             {
                 return null;
             }
-            var categoryListDTO = categories.Select(c => new CategoryDTO
+            var categoryListDTO = categories.Select(c => new CategoryToReturnDTO
             {
+                Id = c.Id,
                 Name = c.Name,
-                Products = c.Products.Select(pm => new ProductDTO
+                Products = c.Products.Select(pm => new ProductToReturnDTO
                 {
+                    Id = pm.Id,
                     Name = pm.Name,
                     Price = pm.Price,
-                    Users = pm.Users.Select(um => new UserDTO
+                    Users = pm.Users.Select(um => new UserToReturnDTO
                     {
+                        Id = um.Id,
                         Name = um.Name,
                         Email = um.Email,
                         Password = um.Password,
@@ -122,7 +124,7 @@ namespace E_Commerce.Repository.CategoryRepo
         
         
 
-        public CategoryDTO GetById(int id)
+        public CategoryToReturnDTO GetById(int id)
         {
             var category = _context.categories
                 .Include(s => s.Products)
@@ -131,15 +133,16 @@ namespace E_Commerce.Repository.CategoryRepo
 
             if (category == null) return null;
 
-            var categoryDTO = new CategoryDTO
+            var categoryDTO = new CategoryToReturnDTO
             {
                 Name = category.Name,
-                Products = category.Products.Select(x => new ProductDTO
+                Products = category.Products.Select(x => new ProductToReturnDTO
                 {
                     Name = x.Name,
                     Price = x.Price,
-                    Users = x.Users.Select(u => new UserDTO
+                    Users = x.Users.Select(u => new UserToReturnDTO
                     {
+                        Id = u.Id,
                         Name = u.Name,
                         Email = u.Email,
                         Password = u.Password,
@@ -154,7 +157,7 @@ namespace E_Commerce.Repository.CategoryRepo
             return categoryDTO;
         }
 
-        public CategoryDTO Update(int Id, CategoryDTO categoryDTO)
+        public bool Update(int Id, CategoryToAddOnlyDTO categoryDTO)
         {
             var category = _context.categories
                .Include(s => s.Products)
@@ -162,28 +165,31 @@ namespace E_Commerce.Repository.CategoryRepo
                .FirstOrDefault(c => c.Id == Id);
 
             //list of products that needed to be matched with new category 
-            var matchedProduct = _context.products.Where(p => categoryDTO.ProductIds.Contains(p.Id)).ToList();
+            var matchedProduct = _context.products
+                    .Where(p => categoryDTO.ProductIds.Contains(p.Id))
+                    .ToList();
 
             if (category == null)
             {
-                return null;
+                return false;
             }
             category.Name = categoryDTO.Name;
             category.Products = matchedProduct;
 
             _context.categories.Update(category);
             _context.SaveChanges();
-            return categoryDTO;
+            return true;
         }
-        public CategoryDTO UpdateWithRelatedData(int Id, CategoryDTO categoryDTO)
+        public bool UpdateWithRelatedData(int Id, CategoryToAddRelatedDTO categoryDTO)
         {
             var category = _context.categories
                .Include(s => s.Products)
                .ThenInclude(p => p.Users)
                .FirstOrDefault(c => c.Id == Id);
+
             if (category == null)
             {
-                return null;
+                return false;
             }
             category.Name = categoryDTO.Name;
             category.Products = categoryDTO.Products.Select(c => new Product
@@ -204,7 +210,7 @@ namespace E_Commerce.Repository.CategoryRepo
 
             _context.categories.Update(category);
             _context.SaveChanges();
-            return categoryDTO;
+            return true;
         }
 
     }

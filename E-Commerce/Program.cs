@@ -1,5 +1,6 @@
 using E_Commerce;
 using E_Commerce.Repository.CategoryRepo;
+using E_Commerce.Repository.UserRepo;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 builder.Services
     .AddDbContext<AppDbContext>(options => options
